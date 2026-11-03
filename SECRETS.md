@@ -80,6 +80,10 @@ The workflow scans the files with `betterleaks dir`, then `deploy.sh` decrypts a
 
 **Break it on purpose:** `echo $SOPS_AGE_KEY` is shown as `***`, but `sops -d secrets/prod/database.yaml`
 prints the decrypted password in clear: it is not a registered secret, so GitHub does not mask it.
+Observed on a `workflow_dispatch` run of a throwaway `break-it` branch (private repo): `SOPS_AGE_KEY: ***`,
+but the full decrypted YAML and `base64(password)` were readable in the log. The run and the branch
+were deleted and the prod password was rotated (commit `rotate prod password after CI log leak`):
+a secret that reached a log is a leaked secret.
 GitHub replaces only the exact secret string by `***`, and masking is best-effort: `echo "$SOPS_AGE_KEY" | base64`, splitting the value
 across lines, `rev`, or a value showing up inside an error message all go through in clear. Anyone
 who can push to a branch that triggers the workflow can exfiltrate the key.
