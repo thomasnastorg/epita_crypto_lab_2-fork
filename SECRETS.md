@@ -78,8 +78,9 @@ from reading *future* versions. Removing a block never revokes a past read: leav
 `ci.key` is a recipient of the prod rule only. Its private key is in the `SOPS_AGE_KEY` Actions secret.
 The workflow scans the files with `betterleaks dir`, then `deploy.sh` decrypts and calls the endpoint.
 
-**Break it on purpose (done on a throwaway branch run, then reverted):** GitHub replaces the exact
-secret string by `***`, but masking is best-effort: `echo "$SOPS_AGE_KEY" | base64`, splitting the value
+**Break it on purpose:** `echo $SOPS_AGE_KEY` is shown as `***`, but `sops -d secrets/prod/database.yaml`
+prints the decrypted password in clear: it is not a registered secret, so GitHub does not mask it.
+GitHub replaces only the exact secret string by `***`, and masking is best-effort: `echo "$SOPS_AGE_KEY" | base64`, splitting the value
 across lines, `rev`, or a value showing up inside an error message all go through in clear. Anyone
 who can push to a branch that triggers the workflow can exfiltrate the key.
 
