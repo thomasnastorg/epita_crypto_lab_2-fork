@@ -3,6 +3,7 @@ creation_rules:
     key_groups:
       - age:
           - age19eft4yajxnlu4n7q9j25pftt73lgcmtmq4zfyxnzf2aldtgtrvzsjscfwh # alice
+          - age18h5lakt08jldmmr4rgtarggf74945r8e03q0cg0kuw5ql88f9e9qq6uz9r # ci
   - path_regex: secrets/dev/.*\.ya?ml$
     encrypted_regex: '^(password|token|key|secret)$'
     key_groups:
