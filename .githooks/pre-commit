@@ -1,0 +1,9 @@
+#!/bin/sh
+# in .githooks/pre-commit
+betterleaks --no-banner git --pre-commit --staged --redact --exit-code 42 .
+case $? in
+  0) exit 0 ;;                                     # no leak: let the commit through
+  42) echo "!! secret blocked by hook" >&2 ;;      # leak found
+  *) echo "!! hook: betterleaks failed" >&2 ;;     # betterleaks could not run
+esac
+exit 1
